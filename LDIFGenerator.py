@@ -8,24 +8,26 @@ ldifFile.close()
 ldifFile=open(locOutputLDIF,"a")
 def main():
     locInputExcel="LDIFGenerator.xlsx"
-
-
-
+    print(f"{Fore.GREEN}Shubham's LDIF Generator{Style.RESET_ALL}")
     workbook=openpyxl.load_workbook(locInputExcel)
     sheet=workbook.active
     max_row=sheet.max_row
     max_column=sheet.max_column
+    print("Total Transactions to be processed: {}".format(max_row))
     currentElement=1
     for currentElement in range(1,max_row+1):
         cell=sheet.cell(currentElement,1)
-        userID=cell.value
+        userID="cn="+cell.value+",ou=users,o=abc"
         cell=sheet.cell(currentElement,2)
         groupName=cell.value
         writeMember(userID,groupName)
         writeGroupMembership(userID,groupName)
         writeEquivalentToMe(userID,groupName)
+        if(currentElement%100==0):
+            print("{} transactions are processed".format(currentElement))
     workbook.save(locInputExcel)
     ldifFile.close()
+    print("{} trancastions are processed".format(currentElement ))
 
 def writeMember(userID,groupName):
 
